@@ -23,12 +23,22 @@ export class AboutComponent implements OnInit {
     // ex2: timer : Creates an Observable that starts emitting after an dueTime and emits ever increasing numbers after each period of time thereafter.
     const interval$ = timer(3000, 1000);
 
-    interval$.subscribe(val => console.log(`stream 1 => ${val}`));
+    const sub = interval$.subscribe(val => console.log(`stream 1 => ${val}`));
+
+    // unsubscribe after due time...
+    setTimeout(() => sub.unsubscribe(), 5000);
 
     // ex3: fromEvent: Creates an Observable that emits events of a specific type coming from the given event target.
     const click$ = fromEvent(document, 'click');
 
-    click$.subscribe(evt => console.log(evt));
+    click$.subscribe(
+      evt => console.log(evt),
+
+      err => console.log(err),
+
+      () => console.log('completed!')
+
+    );
 
   }
 
