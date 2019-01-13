@@ -19,7 +19,7 @@ export function getAllCourses(req: Request, res: Response) {
 
     setTimeout(() => {
 
-        res.status(200).json({payload:Object.values(COURSES)});
+        res.status(200).json({payload: Object.values(COURSES)});
 
     }, 200);
 
@@ -31,9 +31,9 @@ export function getCourseById(req: Request, res: Response) {
 
     const courseId = req.params["id"];
 
-    const courses:any = Object.values(COURSES);
+    const courses: any = Object.values(COURSES);
 
-    const course = courses.find(course => course.id == courseId);
+    const foundCourse = courses.find(course => course.id === courseId);
 
-    res.status(200).json(course);
+    res.status(200).json(foundCourse);
 }
