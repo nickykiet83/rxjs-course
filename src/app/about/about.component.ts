@@ -1,5 +1,8 @@
-import { Observable, noop } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
+import { noop } from 'rxjs';
+
+import { createHttpObservable } from '../common/util';
+import { map } from 'rxjs/operators';
 
 @Component({
     selector: 'about',
@@ -12,30 +15,14 @@ export class AboutComponent implements OnInit {
 
     ngOnInit() {
 
-        const http$ = Observable.create(observer => {
+        const http$ = createHttpObservable('/api/courses');
 
-            fetch('/api/courses')
-                .then(response => {
+        const coures$ = http$
+            .pipe(
+                map(res => Object.values(res['payload']))
+            );
 
-                    return response.json();
-
-                })
-                .then(body => {
-
-                    observer.next(body);
-
-                    observer.complete();
-
-                })
-                .catch(err => {
-
-                    observer.error(err);
-
-                });
-
-        });
-
-        http$.subscribe(
+        coures$.subscribe(
             courses => console.log(courses),
 
             // () => {}, --> using noop
@@ -48,3 +35,4 @@ export class AboutComponent implements OnInit {
     }
 
 }
+
