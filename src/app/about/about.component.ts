@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { of, interval, merge, Observable } from 'rxjs';
+import { of, interval, merge, Observable, Subscription } from 'rxjs';
 import { concat } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { createHttpObservable } from '../common/util';
 
 @Component({
     selector: 'about',
@@ -9,24 +10,21 @@ import { map } from 'rxjs/operators';
     styleUrls: ['./about.component.css']
 })
 export class AboutComponent implements OnInit, OnDestroy {
-    private result$: Observable<any>;
+    private sub: Subscription;
     constructor() { }
 
     ngOnInit() {
-        const interval1$ = interval(1000);
+        const http$ = createHttpObservable('/api/courses');
+        this.sub = http$.subscribe(console.log);
 
-        const interval2$ = interval1$.pipe(map(val => 10 * val));
-
-        this.result$ = merge(interval1$, interval2$);
-
-        this.result$.subscribe(console.log);
-
+        setTimeout(() => {
+            this.sub.unsubscribe();
+        }, 0);
     }
 
     ngOnDestroy() {
         console.log('destroyed');
-
-        this.result$.subscribe().unsubscribe();
+        this.sub.unsubscribe();
     }
 
 }
