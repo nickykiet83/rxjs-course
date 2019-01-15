@@ -2,12 +2,11 @@ import { AfterViewInit, Component, ElementRef, Inject, OnInit, ViewChild } from 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import * as moment from 'moment';
-import { from } from 'rxjs';
-import { filter, map, concatMap } from 'rxjs/operators';
 import { fromPromise } from 'rxjs/observable/fromPromise';
-
+import { filter, map, mergeMap, concatMap } from 'rxjs/operators';
 
 import { Course } from '../model/course';
+
 
 
 @Component({
@@ -45,7 +44,8 @@ export class CourseDialogComponent implements OnInit, AfterViewInit {
             .pipe(
                 filter(() => this.form.valid),
                 map(values => JSON.stringify(values)),
-                concatMap(changes => this.saveCourse(changes))
+                // concatMap(changes => this.saveCourse(changes)),
+                mergeMap(changes => this.saveCourse(changes))
             )
             .subscribe();
     }

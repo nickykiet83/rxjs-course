@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { of, interval, merge } from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { of, interval, merge, Observable } from 'rxjs';
 import { concat } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -8,8 +8,8 @@ import { map } from 'rxjs/operators';
     templateUrl: './about.component.html',
     styleUrls: ['./about.component.css']
 })
-export class AboutComponent implements OnInit {
-
+export class AboutComponent implements OnInit, OnDestroy {
+    private result$: Observable<any>;
     constructor() { }
 
     ngOnInit() {
@@ -17,11 +17,16 @@ export class AboutComponent implements OnInit {
 
         const interval2$ = interval1$.pipe(map(val => 10 * val));
 
-        const result$ = merge(interval1$, interval2$);
+        this.result$ = merge(interval1$, interval2$);
 
-        result$.subscribe(console.log);
+        this.result$.subscribe(console.log);
 
     }
 
-}
+    ngOnDestroy() {
+        console.log('destroyed');
 
+        this.result$.subscribe().unsubscribe();
+    }
+
+}
